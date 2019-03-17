@@ -1,13 +1,28 @@
 <!-- one method to get the input <textarea rows="6" [value]="newPost" #postInput></textarea> -->
 <!--another way to do this two way binding-->
 <mat-card>
-  <mat-form-field>
-    <textarea matInput rows="6" [(ngModel)]="enteredValue"></textarea>
-  </mat-form-field>
-  <button
-    color="primary"
-    mat-raised-button
-    (click)="onAddPost()">Save Post</button>
+  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+      <mat-form-field>
+          <input
+            matInput
+            type="text"
+            name="title"
+            ngModel
+            required>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea
+            matInput
+            rows="6"
+            name="content"
+            ngModel
+            required></textarea>
+        </mat-form-field>
+        <button
+          color="primary"
+          mat-raised-button
+          type="submit">Save Post</button>
+  </form>
 </mat-card>
 
 <hr>
