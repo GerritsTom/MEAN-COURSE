@@ -1,7 +1,14 @@
 <app-header></app-header>
+<!-- one method to get an object to another component
 <main>
   <app-post-create (postCreated)="onPostAdded($event)"></app-post-create>
   <app-post-list [posts]="storedPosts"></app-post-list>
+</main> -->
+
+<!--another method that uses dependency injection and services-->
+<main>
+  <app-post-create></app-post-create>
+  <app-post-list></app-post-list>
 </main>
 
 
