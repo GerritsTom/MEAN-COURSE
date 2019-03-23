@@ -8,7 +8,7 @@ const app = express();
 // connect to DB
 // mongodb://localhost:27017
 // mongodb+srv://admin:la8Ml5zuS8Xtl6FY@cluster0-qumye.mongodb.net/postDB?retryWrites=true
-mongoos.connect("mongodb://localhost:27017/postDB", {useNewUrlParser: true })
+mongoos.connect("mongodb+srv://admin:la8Ml5zuS8Xtl6FY@cluster0-qumye.mongodb.net/postDB?retryWrites=true", {useNewUrlParser: true })
   .then(()=> {
     console.log('Connected to database!');
   })
@@ -60,7 +60,3 @@ app.delete('/api/posts/:id', (req, res, next) => {
 })
 
 module.exports = app;
-
-
-
-

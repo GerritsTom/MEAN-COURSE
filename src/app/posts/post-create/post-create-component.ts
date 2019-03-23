@@ -1,6 +1,8 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Post } from '../post.model';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+
 import { PostsService } from '../posts.service';
 
 @Component({
@@ -12,12 +14,19 @@ export class PostCreateComponent implements OnInit {
 
   enteredContent = '';
   enteredTitle = '';
+  private mode = 'create';
   // @Output() postCreated = new EventEmitter<Post>(); we use dependency injection through sercives
 
   ngOnInit(): void {
+    this.route.paramMap
+    .subscribe((paramMap: ParamMap) => {
+      if (paramMap.has('postId')) {
+
+      }
+    })
   }
 
-  constructor(public postsService: PostsService) {}
+  constructor(public postsService: PostsService, public route: ActivatedRoute) {}
 
 
   /* property binding and string interpolation
