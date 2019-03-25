@@ -17,6 +17,7 @@ export class PostCreateComponent implements OnInit {
   post: Post;
   private mode = 'create';
   private postId: string;
+  private isLoading = false;
 
   // @Output() postCreated = new EventEmitter<Post>(); we use dependency injection through sercives
 
@@ -26,7 +27,12 @@ export class PostCreateComponent implements OnInit {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
         this.postId = paramMap.get('postId');
-        this.post = this.postsService.getPost(this.postId);
+        // synchronous this.post = this.postsService.getPost(this.postId);
+        this.isLoading = true;
+        this.postsService.getPost(this.postId).subscribe(postData => {
+          this.post = {id: postData._id, title: postData.title, content: postData.content};
+          this.isLoading = false;
+        });
       } else {
         this.mode = 'create';
         this.postId = null;

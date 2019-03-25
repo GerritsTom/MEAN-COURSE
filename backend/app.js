@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const Post = require('./models/post');
 const mongoos = require('mongoose');
 
+const postRoutes = require('./routes/posts');
+
 const app = express();
 
 // connect to DB
@@ -26,52 +28,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/api/posts", (req, res, next) => {
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content,
-  });
+app.use('/api/posts', postRoutes);
 
-  post.save().then(createdPost => {
-    res.status(201).json({
-      message: 'Post added successfully',
-      postId: createdPost._id
-    });
-  });
-})
-
-app.get('/api/posts', (req, res, next) => {
-  Post.find()
-    .then(response => {
-      res.status(200).json({
-        messages: "Posts fetched successfully",
-        posts: response
-      });
-    });
-});
-
-app.delete('/api/posts/:id', (req, res, next) => {
-  Post.deleteOne({_id: req.params.id}).then(result => {
-    console.log(result);
-    res.status(200).json({
-      messages: "Posts with id " +req.params.id+ " deleted!"
-    });
-  })
-})
-
-app.put('/api/posts/:id', (req, res, next) => {
-  // reuse id
-  const post = new Post({
-    _id: req.body.id,
-    title: req.body.title,
-    content: req.body.content,
-  });
-  Post.updateOne({_id: req.params.id}, post)
-    .then(result => {
-      res.status(200).json({
-        messages: "Posts with id " +req.params.id+ " updated!"
-      });
-    });
-});
 
 module.exports = app;
