@@ -1,10 +1,10 @@
-import { Post } from "./post.model";
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
-import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
+import { Post } from './post.model';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class PostsService {
   private posts: Post[] = [];
   // Subject is a kind of eventemitter
@@ -24,7 +24,7 @@ export class PostsService {
 
     // convert _id from backend to id
     this.http
-      .get<{ message: string; posts: any }>("http://localhost:3000/api/posts")
+      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts')
       .pipe(
         map(postData => {
           return postData.posts.map(post => {
@@ -46,11 +46,15 @@ export class PostsService {
     return this.postsUpdated.asObservable();
   }
 
+  getPost(postId: string) {
+    return {...this.posts.find(p => p.id === postId)};
+  }
+
   addPost(title: string, content: string) {
     const post: Post = { id: null, title: title, content: content };
 
     this.http
-      .post<{ message: string, postId: string }>("http://localhost:3000/api/posts", post)
+      .post<{ message: string, postId: string }>('http://localhost:3000/api/posts', post)
       .subscribe(responseData => {
         post.id = responseData.postId;
         this.posts.push(post);
@@ -65,5 +69,11 @@ export class PostsService {
         this.posts = updatedPosts;
         this.postsUpdated.next([...this.posts]);
       });
+  }
+
+  updatePost(postId: string, title: string, content: string) {
+    const post: Post = {id: postId, title: title, content: content};
+    this.http.put('http://localhost:3000/api/posts/' + postId, post)
+      .subscribe(response => console.log(response));
   }
 }

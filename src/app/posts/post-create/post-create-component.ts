@@ -14,16 +14,24 @@ export class PostCreateComponent implements OnInit {
 
   enteredContent = '';
   enteredTitle = '';
+  post: Post;
   private mode = 'create';
+  private postId: string;
+
   // @Output() postCreated = new EventEmitter<Post>(); we use dependency injection through sercives
 
   ngOnInit(): void {
     this.route.paramMap
     .subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
-
+        this.mode = 'edit';
+        this.postId = paramMap.get('postId');
+        this.post = this.postsService.getPost(this.postId);
+      } else {
+        this.mode = 'create';
+        this.postId = null;
       }
-    })
+    });
   }
 
   constructor(public postsService: PostsService, public route: ActivatedRoute) {}
@@ -36,14 +44,18 @@ export class PostCreateComponent implements OnInit {
   } */
 
   /* two way binding */
-  onAddPost(form: NgForm) {
+  onSavePost(form: NgForm) {
     /*
     const post: Post = {
         title: form.value.title,
         content: form.value.content}
         ; */
     // this.postCreated.emit(post);
-    this.postsService.addPost(form.value.title, form.value.content);
+    if (this.mode == 'create') {
+      this.postsService.addPost(form.value.title, form.value.content);
+    } else {
+      this.postsService.updatePost(this.postId, form.value.title, form.value.content);
+    }
 
     // reset the form
     form.resetForm();
