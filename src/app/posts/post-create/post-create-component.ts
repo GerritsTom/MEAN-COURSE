@@ -17,7 +17,7 @@ export class PostCreateComponent implements OnInit {
   post: Post;
   private mode = 'create';
   private postId: string;
-  private isLoading = false;
+  isLoading = false;
 
   // @Output() postCreated = new EventEmitter<Post>(); we use dependency injection through sercives
 
@@ -57,7 +57,8 @@ export class PostCreateComponent implements OnInit {
         content: form.value.content}
         ; */
     // this.postCreated.emit(post);
-    if (this.mode == 'create') {
+    this.isLoading = true;
+    if (this.mode === 'create') {
       this.postsService.addPost(form.value.title, form.value.content);
     } else {
       this.postsService.updatePost(this.postId, form.value.title, form.value.content);
