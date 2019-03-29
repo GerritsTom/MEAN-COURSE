@@ -5,12 +5,13 @@ const Post = require('./models/post');
 const mongoos = require('mongoose');
 
 const postRoutes = require('./routes/posts');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
 // connect to DB
 // mongodb://localhost:27017/postDB
-// mongodb+srv://admin:la8Ml5zuS8Xtl6FY@cluster0-qumye.mongodb.net/postDB?retryWrites=true
+// mongodb+srv://admin:la8Ml5zuS8Xtl6FY@cluster0-qumye.mongodb.net/postDB
 mongoos.connect("mongodb://localhost:27017/postDB", {useNewUrlParser: true })
   .then(()=> {
     console.log('Connected to database!');
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/posts', postRoutes);
+app.use('/api/user', userRoutes);
 
 
 module.exports = app;
