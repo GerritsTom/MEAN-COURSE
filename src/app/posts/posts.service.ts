@@ -60,6 +60,7 @@ export class PostsService {
     postData.append('content', content);
     postData.append('image', image, title);
 
+    console.log('>> in addpost');
     // JSON can't handle files => FormData
     this.http
       .post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData)
@@ -70,6 +71,9 @@ export class PostsService {
           content: content,
           imagePath: responseData.post.imagePath
         };
+
+        console.log('>> responseData');
+        console.log(responseData);
 
         //post.id = responseData.postId;
         this.posts.push(post);
