@@ -61,8 +61,6 @@ router.post('/login', (req, res, next) => {
         });
     })
     .catch(err => {
-      console.log('error');
-      console.log(err);
       return res.status(401).json({
         message: 'Auth failed!'
       });
