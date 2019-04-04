@@ -12,7 +12,7 @@ const app = express();
 // connect to DB
 // mongodb://localhost:27017/postDB
 // mongodb+srv://admin:la8Ml5zuS8Xtl6FY@cluster0-qumye.mongodb.net/postDB
-mongoos.connect("mongodb+srv://admin:la8Ml5zuS8Xtl6FY@cluster0-qumye.mongodb.net/postDB", {useNewUrlParser: true })
+mongoos.connect("mongodb://localhost:27017/postDB", {useNewUrlParser: true })
   .then(()=> {
     console.log('Connected to database!');
   })

@@ -30,31 +30,34 @@ router.post('/login', (req, res, next) => {
   // define a global user...
   let fetchedUser;
   // returns an array with a user object in it.
-  User.find({email: req.body.email})
+  User.findOne({email: req.body.email})
     .then(user => {
-      if (user.length < 1) {
+      if (!user) {
         return res.status(401).json({
           message: 'Auth failed, User not found!'
         });
       }
 
-      fetchedUser = user[0];
-      return bcrypt.compare(req.body.password, user[0].password);
+      // we did found a user here...
+      fetchedUser = user;
+      return bcrypt.compare(req.body.password, user.password);
     })
+      // here the result of the compare function
     .then(result => {
       if (!result) {
         return res.status(401).json({
           message: 'Auth failed, Password wrong'
         });
       }
-      // Authentication successfull
+      // Authentication successfull => valid user with valid password here
+      // get a token and ....
       const token = jwt.sign(
         {email: fetchedUser.email, userId: fetchedUser._id},
         'secret_this_should_be_longer',
         {expiresIn: '1h'}
-        );
+      );
 
-        // return the token
+        // return it
         res.status(200).json({
           token: token,
           expriresIn: 3600

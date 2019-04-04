@@ -30,7 +30,6 @@ export class AuthService {
       email,
       password
     };
-    console.log('>> Authdata ' + authData);
     this.http.post('http://localhost:3000/api/user/signup', authData)
       .subscribe(response => {
         console.log(response);
@@ -42,7 +41,6 @@ export class AuthService {
       email,
       password
     };
-    console.log(authData);
     this.http.post<{token: string, expiresIn: number}>('http://localhost:3000/api/user/login', authData)
       .subscribe(response => {
         const token = response.token;
