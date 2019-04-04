@@ -43,13 +43,13 @@ export class AuthService {
     };
     this.http.post<{token: string, expiresIn: number}>('http://localhost:3000/api/user/login', authData)
       .subscribe(response => {
-        const token = response.token;
-        this.token = token;
-        if (token) {
-          const expiresInDuration = response.expiresIn;
+        this.token = response.token;
+        console.log('expiresIn?');
+        console.log(response.expiresIn);
+        if (response.token) {
           this.tokenTimer = setTimeout(() => {
             this.logout();
-          }, expiresInDuration);
+          }, response.expiresIn * 1000);
           this.isAuthenticated = true;
           this.authStatusListener.next(true);
           this.router.navigate(['/']);
