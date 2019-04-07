@@ -1,6 +1,7 @@
 const express = require('express');
 const Post = require('../models/post');
 const multer = require('multer');
+const checkAuth = require('../middleware/check-auth');
 const router = express.Router();
 
 const MIME_TYPE_MAP = {
@@ -27,7 +28,7 @@ const storage = multer.diskStorage({
   }
 })
 
-router.post("", multer({storage: storage}).single('image'),(req, res, next) => {
+router.post("", checkAuth, multer({storage: storage}).single('image'),(req, res, next) => {
   const url = req.protocol + '://' + req.get('host');
   const post = new Post({
     title: req.body.title,
@@ -45,17 +46,25 @@ router.post("", multer({storage: storage}).single('image'),(req, res, next) => {
         imagePath: createdPost.imagePath
       }
     });
-  });
+  }).catch(error => {
+    res.status(500).json({
+      message: "Creating Post failed!"
+    });
+  })
 })
 
 router.get('', (req, res, next) => {
   Post.find()
     .then(response => {
       res.status(200).json({
-        messages: "Posts fetched successfully",
+        message: "Posts fetched successfully",
         posts: response
       });
-    });
+    }).catch(error => {
+      res.status(500).json({
+        message: "Could't get posts"
+      });
+    });;
 });
 
 router.get('/:id', (req, res, next) => {
@@ -66,19 +75,26 @@ router.get('/:id', (req, res, next) => {
       } else {
         res.status(404).json({message: 'Post not found!'});
       }
-    });
+    }).catch(error => {
+      res.status(500).json({
+        message: "Could't get post"
+      });
+    });;
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
   Post.deleteOne({_id: req.params.id}).then(result => {
-    console.log(result);
     res.status(200).json({
       messages: "Posts with id " +req.params.id+ " deleted!"
     });
-  })
+  }).catch(error => {
+    res.status(500).json({
+      message: "Could't delete post"
+    });
+  });;
 })
 
-router.put('/:id',  multer({storage: storage}).single('image'), (req, res, next) => {
+router.put('/:id', checkAuth, multer({storage: storage}).single('image'), (req, res, next) => {
   // file as image or file as string
   let imagePath = req.body.imagePath;
   if (req.file) {
@@ -93,8 +109,18 @@ router.put('/:id',  multer({storage: storage}).single('image'), (req, res, next)
   });
   Post.updateOne({_id: req.params.id}, post)
     .then(result => {
-      res.status(200).json({
-        messages: "Posts with id " +req.params.id+ " updated!"
+      if (result.nModified > 0) {
+        res.status(200).json({
+          message: "Posts with id " +req.params.id+ " updated!"
+        });
+      } else {
+        res.status(401).json({
+          messages: "Post update failed!"
+        });
+      }
+    }).catch(error => {
+      res.status(500).json({
+        message: "Could't update post"
       });
     });
 });

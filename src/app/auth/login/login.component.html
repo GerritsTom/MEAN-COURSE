@@ -1,0 +1,32 @@
+<!-- one method to get the input <textarea rows="6" [value]="newPost" #postInput></textarea> -->
+<!--another way to do this two way binding-->
+<mat-card>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onLogin(loginForm)" #loginForm=ngForm *ngIf="!isLoading">
+      <mat-form-field>
+          <input
+            matInput
+            ngModel
+            type="email"
+            name="email"
+            placeholder="E mail" #emailInput="ngModel" required email>
+            <mat-error *ngIf="emailInput.invalid">Please enter a valid email.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            ngModel
+            type="password"
+            name="password"
+            placeholder="Password." #password="ngModel" required >
+            <mat-error *ngIf="password.invalid">Please enter a valid password.</mat-error>
+        </mat-form-field>
+        <button
+          color="accent"
+          mat-raised-button
+          type="submit" *ngIf="!isLoading" [disabled]="!loginForm.valid">Login</button>
+  </form>
+</mat-card>
+
+<hr>
+<!--<button (click)="onAddPost(postInput)">Save Post</button> -->
