@@ -14,6 +14,8 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         // generate a new observa
+
+        // client or server errors
         let errorMessage = 'An unkown message occured!';
         if (error.error.message) {
           errorMessage = error.error.message;

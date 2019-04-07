@@ -4,16 +4,21 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { PostAdapter } from './post.adapter';
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
+  private baseUrl = 'http://localhost:3000/api';
   private posts: Post[] = [];
   // Subject is a kind of eventemitter
   private postsUpdated = new Subject<Post[]>();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private adapter: PostAdapter) {}
 
   getPosts() {
+
+    const url = `${this.baseUrl}/`;
+    console.log('in getposts');
     // return [...this.posts];
 
     /*
@@ -25,16 +30,18 @@ export class PostsService {
 
     // convert _id from backend to id
     this.http
-      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts')
+      .get<{ message: string; posts: any }>(url + 'posts')
       .pipe(
-        map(postData => {
-          return postData.posts.map(post => {
-            return {
+        map(response => {
+          return response.posts.map(item => {
+            return this.adapter.adapt(item);
+            /*{
+
               title: post.title,
               content: post.content,
               id: post._id,
               imagePath: post.imagePath
-            };
+            };*/
           });
         })
       )
@@ -60,7 +67,6 @@ export class PostsService {
     postData.append('content', content);
     postData.append('image', image, title);
 
-    console.log('>> in addpost');
     // JSON can't handle files => FormData
     this.http
       .post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData)
@@ -71,9 +77,6 @@ export class PostsService {
           content: content,
           imagePath: responseData.post.imagePath
         };
-
-        console.log('>> responseData');
-        console.log(responseData);
 
         //post.id = responseData.postId;
         this.posts.push(post);

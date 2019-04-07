@@ -18,6 +18,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
       authStatus => {
         this.isLoading = false;
+      }, (error) => {
+        console.log('error occured: ', error);
       });
   }
 
