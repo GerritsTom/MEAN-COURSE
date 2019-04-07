@@ -36,9 +36,6 @@ router.post("", checkAuth, multer({storage: storage}).single('image'),(req, res,
     imagePath: url + '/images/' + req.file.filename
   });
 
-  console.log('post');
-  console.log(post);
-
   post.save().then(createdPost => {
     res.status(201).json({
       message: 'Post added successfully',
@@ -49,17 +46,25 @@ router.post("", checkAuth, multer({storage: storage}).single('image'),(req, res,
         imagePath: createdPost.imagePath
       }
     });
-  });
+  }).catch(error => {
+    res.status(500).json({
+      message: "Creating Post failed!"
+    });
+  })
 })
 
 router.get('', (req, res, next) => {
   Post.find()
     .then(response => {
       res.status(200).json({
-        messages: "Posts fetched successfully",
+        message: "Posts fetched successfully",
         posts: response
       });
-    });
+    }).catch(error => {
+      res.status(500).json({
+        message: "Could't get posts"
+      });
+    });;
 });
 
 router.get('/:id', (req, res, next) => {
@@ -70,7 +75,11 @@ router.get('/:id', (req, res, next) => {
       } else {
         res.status(404).json({message: 'Post not found!'});
       }
-    });
+    }).catch(error => {
+      res.status(500).json({
+        message: "Could't get post"
+      });
+    });;
 });
 
 router.delete('/:id', checkAuth, (req, res, next) => {
@@ -78,7 +87,11 @@ router.delete('/:id', checkAuth, (req, res, next) => {
     res.status(200).json({
       messages: "Posts with id " +req.params.id+ " deleted!"
     });
-  })
+  }).catch(error => {
+    res.status(500).json({
+      message: "Could't delete post"
+    });
+  });;
 })
 
 router.put('/:id', checkAuth, multer({storage: storage}).single('image'), (req, res, next) => {
@@ -96,8 +109,18 @@ router.put('/:id', checkAuth, multer({storage: storage}).single('image'), (req, 
   });
   Post.updateOne({_id: req.params.id}, post)
     .then(result => {
-      res.status(200).json({
-        messages: "Posts with id " +req.params.id+ " updated!"
+      if (result.nModified > 0) {
+        res.status(200).json({
+          message: "Posts with id " +req.params.id+ " updated!"
+        });
+      } else {
+        res.status(401).json({
+          messages: "Post update failed!"
+        });
+      }
+    }).catch(error => {
+      res.status(500).json({
+        message: "Could't update post"
       });
     });
 });
